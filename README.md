@@ -16,10 +16,7 @@ WinRomEmu is a Windows application that simplifies the management and launching 
 
 ## Installation
 
-1. Download the latest release from the releases page
-2. Extract the ZIP file to your desired location
-3. Run `WinRomEmu.exe`
-4. The application will automatically set up necessary context menu integrations
+See Releases page.
 
 ## Configuration Storage
 
