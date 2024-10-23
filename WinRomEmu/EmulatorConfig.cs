@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright (c) 2024 WinRomEmu
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -6,15 +8,15 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
-namespace EmulatorManager
+namespace WinRomEmu
 {
     public class EmulatorConfig : INotifyPropertyChanged, IDataErrorInfo
     {
         private int _id;
-        private string _name;
-        private string _path;
-        private string _fileExtensions;
-        private string _executionArguments;
+        private string? _name;
+        private string? _path;
+        private string? _fileExtensions;
+        private string? _executionArguments;
 
         public int Id
         {
@@ -25,7 +27,7 @@ namespace EmulatorManager
                 OnPropertyChanged(nameof(Id));
             }
         }
-        public string Name
+        public string? Name
         {
             get => _name;
             set
@@ -35,7 +37,7 @@ namespace EmulatorManager
             }
         }
 
-        public string Path
+        public string? Path
         {
             get => _path;
             set
@@ -45,7 +47,7 @@ namespace EmulatorManager
             }
         }
 
-        public string FileExtensions
+        public string? FileExtensions
         {
             get => _fileExtensions;
             set
@@ -55,7 +57,7 @@ namespace EmulatorManager
             }
         }
 
-        public string ExecutionArguments
+        public string? ExecutionArguments
         {
             get => _executionArguments;
             set
@@ -65,7 +67,7 @@ namespace EmulatorManager
             }
         }
 
-        public string Error => null;
+        public string Error => null!;
 
         public string this[string columnName]
         {
@@ -112,7 +114,7 @@ namespace EmulatorManager
                             return "Arguments must contain the {romPath} macro. If you are unsure, just enter {romPath}";
                         break;
                 }
-                return null;
+                return null!;
             }
         }
 
@@ -136,7 +138,7 @@ namespace EmulatorManager
                 && string.IsNullOrEmpty(this[nameof(ExecutionArguments)]);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)
         {

@@ -1,4 +1,5 @@
-﻿// EmulatorDatabase.cs
+﻿// Copyright (c) 2024 WinRomEmu
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -6,7 +7,7 @@ using Microsoft.Data.Sqlite;
 using System.IO;
 using System.Linq;
 
-namespace EmulatorManager
+namespace WinRomEmu
 {
     public class EmulatorDatabase
     {
@@ -17,12 +18,12 @@ namespace EmulatorManager
         {
             _dbPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "EmulatorManager",
+                "WinRomEmu",
                 DbFileName
             );
 
             // Ensure directory exists
-            Directory.CreateDirectory(Path.GetDirectoryName(_dbPath));
+            Directory.CreateDirectory(Path.GetDirectoryName(_dbPath)!);
         }
 
         private SqliteConnection GetConnection()

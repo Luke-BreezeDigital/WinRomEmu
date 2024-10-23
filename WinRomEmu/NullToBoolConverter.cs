@@ -1,8 +1,10 @@
-﻿using System;
+﻿// Copyright (c) 2024 WinRomEmu
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.
+using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace EmulatorManager
+namespace WinRomEmu
 {
     public class NullToBoolConverter : IValueConverter
     {

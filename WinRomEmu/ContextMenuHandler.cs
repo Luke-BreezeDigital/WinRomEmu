@@ -1,4 +1,6 @@
-﻿using Microsoft.Win32;
+﻿// Copyright (c) 2024 WinRomEmu
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.
+using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -9,13 +11,13 @@ using Microsoft.Data.Sqlite;
 using System.Windows.Documents;
 using System.Windows;
 
-namespace EmulatorManager
+namespace WinRomEmu
 {
     public class ContextMenuHandler
     {
-        private const string MenuRegistryKey = @"Software\Classes\*\shell\EmulatorManager";
-        private const string DefaultMenuRegistryKey = @"Software\Classes\*\shell\EmulatorManagerDefault";
-        private const string FolderMenuRegistryKey = @"Software\Classes\Directory\shell\EmulatorManager";
+        private const string MenuRegistryKey = @"Software\Classes\*\shell\WinRomEmu";
+        private const string DefaultMenuRegistryKey = @"Software\Classes\*\shell\WinRomEmuDefault";
+        private const string FolderMenuRegistryKey = @"Software\Classes\Directory\shell\WinRomEmu";
         private readonly EmulatorDatabase _emulatorDb;
         private string logPath = "";
 
@@ -25,7 +27,7 @@ namespace EmulatorManager
 
             logPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "EmulatorManager",
+                "WinRomEmu",
                 "debug.log"
             );
         }
@@ -79,8 +81,8 @@ namespace EmulatorManager
                 foreach (var emulator in emulators)
                 {
                     using var subKey = cmdKey.CreateSubKey(emulator.Id.ToString());
-                    subKey.SetValue("MUIVerb", emulator.Name);
-                    SetMenuIcon(subKey, emulator.Path, emulator.Id);
+                    subKey.SetValue("MUIVerb", emulator.Name!);
+                    SetMenuIcon(subKey, emulator.Path!, emulator.Id);
 
                     using var commandKey = subKey.CreateSubKey("command");
                     // Use start command with /b flag to run without creating a window
@@ -103,8 +105,8 @@ namespace EmulatorManager
                 foreach (var emulator in emulators)
                 {
                     using var subKey = cmdKey.CreateSubKey(emulator.Id.ToString());
-                    subKey.SetValue("MUIVerb", emulator.Name);
-                    SetMenuIcon(subKey, emulator.Path, emulator.Id);
+                    subKey.SetValue("MUIVerb", emulator.Name!);
+                    SetMenuIcon(subKey, emulator.Path!, emulator.Id);
 
                     using var commandKey = subKey.CreateSubKey("command");
                     var command = $"cmd /c start /b /min \"\" /d \"{exeDir}\" \"{exePath}\" setdefault \"%V\" {emulator.Id}";
@@ -129,8 +131,8 @@ namespace EmulatorManager
                     MenuRegistryKey,
                     DefaultMenuRegistryKey,
                     FolderMenuRegistryKey,
-                    @"Software\Classes\*\shell\EmulatorManager",
-                    @"Software\Classes\Directory\shell\EmulatorManager"
+                    @"Software\Classes\*\shell\WinRomEmu",
+                    @"Software\Classes\Directory\shell\WinRomEmu"
                 };
 
                 foreach (var key in baseKeys)
@@ -148,8 +150,8 @@ namespace EmulatorManager
                 {
                     try
                     {
-                        Registry.CurrentUser.DeleteSubKeyTree($@"Software\Classes\*\shell\EmulatorManager_{emulator.Id}", false);
-                        Registry.CurrentUser.DeleteSubKeyTree($@"Directory\shell\EmulatorManager_Default_{emulator.Id}", false);
+                        Registry.CurrentUser.DeleteSubKeyTree($@"Software\Classes\*\shell\WinRomEmu_{emulator.Id}", false);
+                        Registry.CurrentUser.DeleteSubKeyTree($@"Directory\shell\WinRomEmu_Default_{emulator.Id}", false);
                     }
                     catch (Exception) { /* Continue if key doesn't exist */ }
                 }
@@ -213,7 +215,7 @@ namespace EmulatorManager
 
             // Verify file extension matches
             var extension = Path.GetExtension(romPath).TrimStart('.').ToLower();
-            var supportedExtensions = emulator.FileExtensions
+            var supportedExtensions = emulator!.FileExtensions!
                 .Split(new[] { '\r', '\n', ';' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(ext => ext.Trim().TrimStart('.', '*').ToLower());
 
@@ -224,9 +226,9 @@ namespace EmulatorManager
             }
 
             // Replace macros in arguments string
-            var arguments = emulator.ExecutionArguments
-                .Replace("{exePath}", $"\"{emulator.Path}\"")
-                .Replace("{romPath}", $"\"{romPath}\"");
+            var arguments = emulator!.ExecutionArguments
+                ?.Replace("{exePath}", $"\"{emulator.Path}\"")
+                ?.Replace("{romPath}", $"\"{romPath}\"");
 
             // Start the process with the emulator as the executable
             var startInfo = new ProcessStartInfo

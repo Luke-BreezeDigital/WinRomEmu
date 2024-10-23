@@ -1,4 +1,6 @@
-﻿using EmulatorManager;
+﻿// Copyright (c) 2024 WinRomEmu
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.
+using WinRomEmu;
 using SQLitePCL;
 using System.Configuration;
 using System.Data;
@@ -12,7 +14,7 @@ namespace WinRomEmu
     /// </summary>
     public partial class App : Application
     {
-        private ContextMenuHandler _contextMenuHandler;
+        private ContextMenuHandler? _contextMenuHandler;
 
         protected override async void OnStartup(StartupEventArgs e)
         {

@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright (c) 2024 WinRomEmu
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
@@ -7,7 +9,7 @@ using Microsoft.Win32;
 using System.IO;
 using System.Diagnostics;
 
-namespace EmulatorManager
+namespace WinRomEmu
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
@@ -223,7 +225,7 @@ namespace EmulatorManager
             try
             {
                 // Clean up file extensions
-                var cleanedExtensions = _editingEmulator.FileExtensions
+                var cleanedExtensions = _editingEmulator!.FileExtensions!
                     .Split(new[] { '\r', '\n', ';' }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(ext => ext.Trim().TrimStart('.', '*'))
                     .Where(ext => !string.IsNullOrWhiteSpace(ext));
