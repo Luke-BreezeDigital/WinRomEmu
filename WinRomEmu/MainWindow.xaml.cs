@@ -84,9 +84,9 @@ namespace WinRomEmu
             EmulatorListView.ItemsSource = Emulators;
 
             // Initialize database and load emulators
-            InitializeAsync();
+            InitializeAsync().Wait();
         }
-        private async void InitializeAsync()
+        private async Task InitializeAsync()
         {
             try
             {
