@@ -35,26 +35,14 @@ namespace WinRomEmu
         private bool _hasUnsavedChanges;
 
         public ObservableCollection<EmulatorConfig> Emulators { get; }
-
         public EmulatorConfig? SelectedEmulator
         {
             get => _editingEmulator ?? _selectedEmulator;
             set
             {
-                if (_editingEmulator != null)
-                {
-                    // Unsubscribe from old emulator's property changed
-                    _editingEmulator.PropertyChanged -= SelectedEmulator_PropertyChanged!;
-                }
-
+                UnsubscribeFromPropertyChanged(_editingEmulator);
                 _editingEmulator = value;
-
-                if (_editingEmulator != null)
-                {
-                    // Subscribe to new emulator's property changed
-                    _editingEmulator.PropertyChanged += SelectedEmulator_PropertyChanged!;
-                }
-
+                SubscribeToPropertyChanged(_editingEmulator);
                 OnPropertyChanged(nameof(SelectedEmulator));
             }
         }
@@ -93,6 +81,21 @@ namespace WinRomEmu
         {
             await InitializeAsync();
         }
+        private void SubscribeToPropertyChanged(EmulatorConfig? emulator)
+        {
+            if (emulator != null)
+            {
+                emulator.PropertyChanged += SelectedEmulator_PropertyChanged;
+            }
+        }
+
+        private void UnsubscribeFromPropertyChanged(EmulatorConfig? emulator)
+        {
+            if (emulator != null)
+            {
+                emulator.PropertyChanged -= SelectedEmulator_PropertyChanged;
+            }
+        }
         private async Task InitializeAsync()
         {
             try
@@ -117,7 +120,7 @@ namespace WinRomEmu
         }
 
 
-        private void SelectedEmulator_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void SelectedEmulator_PropertyChanged(object? sender, PropertyChangedEventArgs? e)
         {
             HasUnsavedChanges = true;
         }
