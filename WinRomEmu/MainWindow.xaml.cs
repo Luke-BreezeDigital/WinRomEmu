@@ -86,9 +86,12 @@ namespace WinRomEmu
             Emulators = new ObservableCollection<EmulatorConfig>();
             DataContext = this;
             EmulatorListView.ItemsSource = Emulators;
+            Loaded += MainWindow_Loaded;
+        }
 
-            // Initialize database and load emulators
-            InitializeAsync().Wait();
+        public async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            await InitializeAsync();
         }
         private async Task InitializeAsync()
         {
