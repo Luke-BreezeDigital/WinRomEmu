@@ -10,8 +10,9 @@ using System.Linq;
 using Microsoft.Data.Sqlite;
 using System.Windows.Documents;
 using System.Windows;
+using WinRomEmu.Database.Sqlite;
 
-namespace WinRomEmu
+namespace WinRomEmu.ContextMenu
 {
     public class ContextMenuHandler
     {
@@ -196,7 +197,8 @@ namespace WinRomEmu
             {
                 File.AppendAllLines(logPath, new[] { defaultEmulatorId.Value.ToString() });
                 await RunEmulatorAsync(romPath, defaultEmulatorId.Value);
-            } else
+            }
+            else
             {
                 MessageBox.Show("No default emulator has been configured for this directory/set. Please go to the parent directory and right-click to assign a default emulator to this directory/set.", "No Default Configured", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
@@ -210,7 +212,7 @@ namespace WinRomEmu
             if (emulator == null)
             {
                 MessageBox.Show("No emulator found, it's possible no emulatorId was provided.", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return; 
+                return;
             }
 
             // Verify file extension matches

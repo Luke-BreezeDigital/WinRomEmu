@@ -8,7 +8,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
-namespace WinRomEmu
+namespace WinRomEmu.Models
 {
     public class EmulatorConfig : INotifyPropertyChanged, IDataErrorInfo
     {
@@ -122,11 +122,11 @@ namespace WinRomEmu
         {
             return new EmulatorConfig
             {
-                Id = this.Id,
-                Name = this.Name,
-                Path = this.Path,
-                FileExtensions = this.FileExtensions,
-                ExecutionArguments = this.ExecutionArguments
+                Id = Id,
+                Name = Name,
+                Path = Path,
+                FileExtensions = FileExtensions,
+                ExecutionArguments = ExecutionArguments
             };
         }
 

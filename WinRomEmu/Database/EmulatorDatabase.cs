@@ -7,7 +7,9 @@ using Microsoft.Data.Sqlite;
 using System.IO;
 using System.Linq;
 
-namespace WinRomEmu
+using WinRomEmu.Models;
+
+namespace WinRomEmu.Database.Sqlite
 {
     public class EmulatorDatabase
     {

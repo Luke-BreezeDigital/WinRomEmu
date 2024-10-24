@@ -2,10 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
         xmlns:local="clr-namespace:WinRomEmu"
-        Title="Emulator Manager" Height="600" Width="800"
+        xmlns:converters="clr-namespace:WinRomEmu.Converters"
+        Title="WinRomEmu" Height="600" Width="800"
         Background="#1E1E1E">
     <Window.Resources>
-        <local:NullToBoolConverter x:Key="NullToBoolConverter"/>
+        <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
 
         <!-- TextBox Style -->
         <Style TargetType="TextBox">
@@ -115,7 +116,7 @@
           SelectionChanged="EmulatorListView_SelectionChanged" 
           HorizontalAlignment="Stretch">
             <ListView.Resources>
-                <local:PercentageWidthConverter x:Key="PercentageConverter"/>
+                <converters:PercentageWidthConverter x:Key="PercentageConverter"/>
             </ListView.Resources>
             <ListView.View>
                 <GridView x:Name="MainGridView">

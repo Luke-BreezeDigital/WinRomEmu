@@ -1,11 +1,12 @@
 ﻿// Copyright (c) 2024 WinRomEmu
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
-using WinRomEmu;
 using SQLitePCL;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Windows;
+
+using WinRomEmu.ContextMenu;
 
 namespace WinRomEmu
 {

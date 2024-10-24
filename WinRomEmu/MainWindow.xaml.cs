@@ -9,6 +9,10 @@ using Microsoft.Win32;
 using System.IO;
 using System.Diagnostics;
 
+using WinRomEmu.Database.Sqlite;
+using WinRomEmu.Models;
+using WinRomEmu.ContextMenu;
+
 namespace WinRomEmu
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
