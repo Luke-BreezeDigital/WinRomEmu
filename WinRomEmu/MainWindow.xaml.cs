@@ -352,6 +352,177 @@ namespace WinRomEmu
             base.OnClosing(e);
         }
 
+        private void RestartExplorer()
+        {
+            try
+            {
+                // Find all Explorer processes
+                var explorerProcesses = Process.GetProcesses()
+                    .Where(p => p.ProcessName.ToLower() == "explorer");
+
+                foreach (var process in explorerProcesses)
+                {
+                    try
+                    {
+                        process.Kill();
+                    }
+                    catch (Exception)
+                    {
+                        // Ignore errors for individual process termination
+                        continue;
+                    }
+                }
+
+                // Start a new Explorer process
+                Process.Start("explorer.exe");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error restarting Explorer: {ex.Message}\n\nPlease restart Explorer manually or restart your computer.",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
+        }
+
+        private void RestartExplorer_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+                "Are you sure you want to restart Windows Explorer?\n\nThis will close and reopen all Explorer windows.",
+                "Confirm Restart",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question
+            );
+
+            if (result == MessageBoxResult.Yes)
+            {
+                RestartExplorer();
+            }
+        }
+        private void DisableWin11ContextMenu_Click(object sender, RoutedEventArgs e)
+        {
+            string keyPath = @"Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32";
+            try
+            {
+                using (var key = Registry.CurrentUser.OpenSubKey(keyPath, true))
+                {
+                    // Check if key exists and has the empty string value
+                    var isAlreadyDisabled = key != null && key.GetValue("")?.ToString() == "";
+
+                    if (!isAlreadyDisabled)
+                    {
+                        // Create or update the key with empty string value
+                        using (var newKey = Registry.CurrentUser.CreateSubKey(keyPath))
+                        {
+                            newKey.SetValue("", "", RegistryValueKind.String);
+                        }
+
+                        var result = MessageBox.Show(
+                            "Windows 11 context menu has been disabled.\n\nWould you like to restart Explorer now for changes to take effect?",
+                            "Success",
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Question
+                        );
+
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            RestartExplorer();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(
+                            "Windows 11 context menu is already disabled.",
+                            "Information",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information
+                        );
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error disabling Windows 11 context menu: {ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
+        }
+
+        private void EnableWin11ContextMenu_Click(object sender, RoutedEventArgs e)
+        {
+            string keyPath = @"Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32";
+            try
+            {
+                // Check if the key exists and has empty string value (disabled state)
+                bool isCurrentlyDisabled = false;
+                using (var key = Registry.CurrentUser.OpenSubKey(keyPath))
+                {
+                    isCurrentlyDisabled = key != null && key.GetValue("")?.ToString() == "";
+                }
+
+                if (isCurrentlyDisabled)
+                {
+                    // Delete the InprocServer32 key
+                    using (var clsidKey = Registry.CurrentUser.OpenSubKey(@"Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}", true))
+                    {
+                        if (clsidKey != null)
+                        {
+                            clsidKey.DeleteSubKey("InprocServer32", false);
+                            // Also delete the parent key if it's empty
+                            if (clsidKey.SubKeyCount == 0 && clsidKey.ValueCount == 0)
+                            {
+                                Registry.CurrentUser.OpenSubKey(@"Software\Classes\CLSID", true)
+                                    ?.DeleteSubKey("{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}", false);
+                            }
+                        }
+                    }
+
+                    var result = MessageBox.Show(
+                        "Windows 11 context menu has been enabled.\n\nWould you like to restart Explorer now for changes to take effect?",
+                        "Success",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question
+                    );
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        RestartExplorer();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Windows 11 context menu is already enabled.",
+                        "Information",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information
+                    );
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show(
+                    "Access denied. Please run the application as administrator.",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error enabling Windows 11 context menu: {ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
+        }
         private void DisabledOverlay_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var result = MessageBox.Show(
