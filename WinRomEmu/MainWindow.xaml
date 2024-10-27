@@ -155,6 +155,11 @@
                   Padding="8,6">
                 </MenuItem>
             </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="Default Emulator Manager" 
+              Click="ShowDefaultEmulatorManager_Click" 
+              ToolTip="Configure default emulators for specific folders"/>
+            </MenuItem>
         </Menu>
 
         <!-- Existing Grid with adjusted margins -->

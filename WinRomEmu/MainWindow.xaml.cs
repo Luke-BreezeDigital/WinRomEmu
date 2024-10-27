@@ -452,6 +452,12 @@ namespace WinRomEmu
                 );
             }
         }
+        private void ShowDefaultEmulatorManager_Click(object sender, RoutedEventArgs e)
+        {
+            var managerWindow = new DefaultEmulatorManagerWindow(_database);
+            managerWindow.Owner = this;
+            managerWindow.ShowDialog();
+        }
 
         private void EnableWin11ContextMenu_Click(object sender, RoutedEventArgs e)
         {
