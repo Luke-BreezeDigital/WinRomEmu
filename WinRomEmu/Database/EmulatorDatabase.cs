@@ -59,6 +59,8 @@ namespace WinRomEmu.Database.Sqlite
                 )";
 
             await command.ExecuteNonQueryAsync();
+
+            await connection.CloseAsync();
         }
         public async Task SetDefaultEmulatorAsync(string folderPath, int emulatorId)
         {

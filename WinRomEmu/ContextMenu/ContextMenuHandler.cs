@@ -203,7 +203,6 @@ namespace WinRomEmu.ContextMenu
                 MessageBox.Show("No default emulator has been configured for this directory/set. Please go to the parent directory and right-click to assign a default emulator to this directory/set.", "No Default Configured", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
-
         private async Task RunEmulatorAsync(string romPath, int emulatorId)
         {
             var emulators = await _emulatorDb.LoadEmulatorsAsync();
@@ -211,26 +210,45 @@ namespace WinRomEmu.ContextMenu
 
             if (emulator == null)
             {
-                MessageBox.Show("No emulator found, it's possible no emulatorId was provided.", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("No emulator found, it's possible no emulatorId was provided.",
+                    "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            // Verify file extension matches
-            var extension = Path.GetExtension(romPath).TrimStart('.').ToLower();
-            var supportedExtensions = emulator!.FileExtensions!
+            // Get supported extensions
+            var supportedExtensions = emulator.FileExtensions!
                 .Split(new[] { '\r', '\n', ';' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(ext => ext.Trim().TrimStart('.', '*').ToLower());
+                .Select(ext => ext.Trim().TrimStart('.', '*').ToLower())
+                .ToList();
 
-            if (!supportedExtensions.Contains(extension))
+            // Handle potential archive
+            var archiveResult = await ArchiveHandler.HandleArchive(romPath, supportedExtensions);
+
+            if (!archiveResult.Success)
             {
-                MessageBox.Show($"This is an unsupported file format. If you believe this to be incorrect, please use the GUI to update applicable file extensions for this emulator ({emulator.Name}).", "Unsupported File Format", MessageBoxButton.OK, MessageBoxImage.Stop);
-                return;
+                return; // User cancelled or extraction failed
+            }
+
+            // If we're using an extracted ROM, verify its extension
+            if (!archiveResult.UseOriginalArchive)
+            {
+                var extension = Path.GetExtension(archiveResult.RomPath).TrimStart('.').ToLower();
+                if (!supportedExtensions.Contains(extension))
+                {
+                    MessageBox.Show(
+                        $"The extracted ROM file has an unsupported format. If you believe this to be incorrect, " +
+                        $"please use the GUI to update applicable file extensions for this emulator ({emulator.Name}).",
+                        "Unsupported File Format",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Stop);
+                    return;
+                }
             }
 
             // Replace macros in arguments string
-            var arguments = emulator!.ExecutionArguments
+            var arguments = emulator.ExecutionArguments
                 ?.Replace("{exePath}", $"\"{emulator.Path}\"")
-                ?.Replace("{romPath}", $"\"{romPath}\"");
+                ?.Replace("{romPath}", $"\"{archiveResult.RomPath}\"");
 
             // Start the process with the emulator as the executable
             var startInfo = new ProcessStartInfo

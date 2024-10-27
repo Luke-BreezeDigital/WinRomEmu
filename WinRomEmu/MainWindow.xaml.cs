@@ -100,7 +100,6 @@ namespace WinRomEmu
         {
             try
             {
-                await _database!.InitializeDatabaseAsync();
                 var emulators = await _database.LoadEmulatorsAsync();
 
                 foreach (var emulator in emulators)

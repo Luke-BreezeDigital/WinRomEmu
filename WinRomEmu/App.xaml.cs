@@ -5,8 +5,9 @@ using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Windows;
-
+using System.Threading.Tasks;
 using WinRomEmu.ContextMenu;
+using WinRomEmu.Database.Sqlite;
 
 namespace WinRomEmu
 {
@@ -16,26 +17,80 @@ namespace WinRomEmu
     public partial class App : Application
     {
         private ContextMenuHandler? _contextMenuHandler;
+        private MainWindow? _mainWindow;
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            // Initialize SQLite
-            Batteries_V2.Init();
-
-            _contextMenuHandler = new ContextMenuHandler();
-
-            if (e.Args.Length > 0)
+            var _database = new EmulatorDatabase();
+            await _database!.InitializeDatabaseAsync();
+            try
             {
-                // Handle command-line arguments
-                await _contextMenuHandler.HandleCommandLineAsync(e.Args);
-                Shutdown();
-                return;
+                // Initialize SQLite
+                Batteries_V2.Init();
+                _contextMenuHandler = new ContextMenuHandler();
+
+                // Handle command-line arguments if present
+                if (e.Args.Length > 0)
+                {
+                    await HandleCommandLineMode(e.Args);
+                    return;
+                }
+
+                await StartGuiMode();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"An error occurred during startup: {ex.Message}",
+                    "Startup Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                Shutdown(1);
             }
 
-            // Register context menu
-            await _contextMenuHandler.RegisterContextMenuAsync();
             base.OnStartup(e);
         }
-    }
 
+        private async Task HandleCommandLineMode(string[] args)
+        {
+            try
+            {
+                await _contextMenuHandler!.HandleCommandLineAsync(args);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error processing command: {ex.Message}",
+                    "Command Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            finally
+            {
+                Shutdown();
+            }
+        }
+
+        private async Task StartGuiMode()
+        {
+            // Register context menu before showing the window
+            await _contextMenuHandler!.RegisterContextMenuAsync();
+
+            // Create and show the main window on the UI thread
+            Dispatcher.Invoke(() =>
+            {
+                _mainWindow = new MainWindow();
+                MainWindow = _mainWindow; // Set the application's main window
+                _mainWindow.Show();
+            });
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            // Cleanup resources if needed
+            _contextMenuHandler = null;
+            _mainWindow = null;
+            base.OnExit(e);
+        }
+    }
 }
