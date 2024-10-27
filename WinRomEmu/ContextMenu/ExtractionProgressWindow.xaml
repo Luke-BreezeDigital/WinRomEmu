@@ -1,4 +1,4 @@
-﻿<Window x:Class="WinRomEmu.ExtractionProgressWindow"
+﻿<Window x:Class="WinRomEmu.ContextMenu.ExtractionProgressWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Extracting Archive" 

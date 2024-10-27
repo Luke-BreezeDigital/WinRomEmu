@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 
-namespace WinRomEmu
+namespace WinRomEmu.ContextMenu
 {
     public class ArchiveHandler
     {
@@ -302,7 +302,7 @@ namespace WinRomEmu
             long totalBytes = archive.Entries.Where(e => !e.IsDirectory).Sum(e => e.Size);
 
             // Create a cancellation token source for the progress monitoring
-            using var cts = new System.Threading.CancellationTokenSource();
+            using var cts = new CancellationTokenSource();
 
             // Start the extraction in a separate task
             var extractionTask = Task.Run(() =>
@@ -359,7 +359,7 @@ namespace WinRomEmu
                     progress.Report(new ExtractionProgress
                     {
                         Percentage = percentage,
-                        CurrentFile = String.Join(',', outputFiles.Select(x => Path.GetFileName(x.Key))),
+                        CurrentFile = string.Join(',', outputFiles.Select(x => Path.GetFileName(x.Key))),
                         CurrentBytes = currentBytes,
                         TotalBytes = totalBytes
                     });

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 
-namespace WinRomEmu
+namespace WinRomEmu.ContextMenu
 {
     public partial class ExtractionProgressWindow : Window
     {
