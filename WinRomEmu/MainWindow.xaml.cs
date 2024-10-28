@@ -12,6 +12,10 @@ using System.Diagnostics;
 using WinRomEmu.Database.Sqlite;
 using WinRomEmu.Models;
 using WinRomEmu.ContextMenu;
+using System.IO.Compression;
+using SharpCompress.Archives.Zip;
+using ZipArchive = SharpCompress.Archives.Zip.ZipArchive;
+using SharpCompress.Archives;
 
 namespace WinRomEmu
 {
@@ -557,7 +561,16 @@ namespace WinRomEmu
 
         private void OpenRomDownloader_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start(Path.Combine(Directory.GetCurrentDirectory(), "RomDownloader-build", "RomDownloader.exe"));
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "RomDownloader-build", "RomDownloader.exe");
+            if (!File.Exists(path))
+            { string zipPath = Path.Combine(Directory.GetCurrentDirectory(), "RomDownloader-build.zip");
+                if (File.Exists(zipPath))
+                {
+                    var archive = ZipArchive.Open(zipPath);
+                    archive.ExtractToDirectory(Path.Combine(Directory.GetCurrentDirectory()));
+                }
+            }
+            Process.Start(Path.Combine(path));
         }
     }
 }
