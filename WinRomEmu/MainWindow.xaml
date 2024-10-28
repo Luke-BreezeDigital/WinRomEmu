@@ -159,6 +159,9 @@
                 <MenuItem Header="Default Emulator Manager" 
               Click="ShowDefaultEmulatorManager_Click" 
               ToolTip="Configure default emulators for specific folders"/>
+                <MenuItem Header="Open ROM Downloader" 
+              Click="OpenRomDownloader_Click" 
+              ToolTip="ROM Downloader UI by WinRomEmu, Powered by CDRomance.org."/>
             </MenuItem>
         </Menu>
 

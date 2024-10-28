@@ -554,5 +554,10 @@ namespace WinRomEmu
             else
                 MessageBox.Show("Please ensure the emulator path is valid.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+
+        private void OpenRomDownloader_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(Path.Combine(Directory.GetCurrentDirectory(), "RomDownloader-build", "RomDownloader.exe"));
+        }
     }
 }

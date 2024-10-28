@@ -1,0 +1,41 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "RomDownloader/1.0.0": {
+        "dependencies": {
+          "HtmlAgilityPack": "1.11.69"
+        },
+        "runtime": {
+          "RomDownloader.dll": {}
+        }
+      },
+      "HtmlAgilityPack/1.11.69": {
+        "runtime": {
+          "lib/netstandard2.0/HtmlAgilityPack.dll": {
+            "assemblyVersion": "1.11.69.0",
+            "fileVersion": "1.11.69.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "RomDownloader/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HtmlAgilityPack/1.11.69": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iJ0Kpqi+S97n/dtDVAPlTCNBFaC8ieIBOa5tMp4Dgi7VtuErKopll1KGr/9tDkXMS+Z9OidAw5rYtb9ikh+dzQ==",
+      "path": "htmlagilitypack/1.11.69",
+      "hashPath": "htmlagilitypack.1.11.69.nupkg.sha512"
+    }
+  }
+}
